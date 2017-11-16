@@ -10,3 +10,5 @@ Any comments or suggestions to improve either the model or data-processing are h
 
 This project tries to classify different Iris samples into three categories. I use training set to build a simple model, and test out its performance on testing dataset. Please see file "Iris/Iris-classification-kaggle.ipynb" for implementation.
 
+Todo:
+update python code to use different model.
