@@ -10,5 +10,9 @@ Any comments or suggestions to improve either the model or data-processing are h
 
 This project tries to classify different Iris samples into three categories. I use training set to build a simple model, and test out its performance on testing dataset. Please see file "Iris/Iris-classification-kaggle.ipynb" for implementation.
 
-Todo:
-update python code to use different model.
+
+## 2. mini projects
+
+### * Student-Admission problem:
+This project predicts if the student will be admitted to a graduate school based on features, including GPA, GRE score, and undergraduate school ranks. We practice basic operations and techniques for general machine learning solutions..
+
