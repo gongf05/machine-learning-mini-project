@@ -16,3 +16,10 @@ This project tries to classify different Iris samples into three categories. I u
 ### * Student-Admission problem:
 This project predicts if the student will be admitted to a graduate school based on features, including GPA, GRE score, and undergraduate school ranks. We practice basic operations and techniques for general machine learning solutions..
 
+There are two solutions:
+* single layer model: there is only one output layer without any intermediate hidden layer. 
+
+	-  see "student_admission_single_layer_model.ipynb"
+
+* multiple layer model: there is one hidden layer and one output layer.
+	- see "student_admission_multiple_layer_model.ipynb"
