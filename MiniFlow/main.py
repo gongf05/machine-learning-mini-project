@@ -29,9 +29,13 @@ X, y = Input(), Input()
 W1, b1 = Input(), Input()
 W2, b2 = Input(), Input()
 
+# input to linear transform
 l1 = Linear(X, W1, b1)
+# sigmoid of linear output - feed into hidden layer
 s1 = Sigmoid(l1)
+# linear transform in hidden layer to generate output
 l2 = Linear(s1, W2, b2)
+# calculagte MSE in output
 cost = MSE(y, l2)
 
 feed_dict = {
@@ -47,9 +51,11 @@ epochs = 100
 # Total number of examples
 m = X_.shape[0]
 batch_size = 11
+#  / operator do a floating-point division, and added the // operator to do integer division - mod operation
 steps_per_epoch = m // batch_size
-
+# generate list of sorted nodes
 graph = topological_sort(feed_dict)
+# parameters that can be updated and tuned
 trainables = [W1, b1, W2, b2]
 
 print("Total number of examples = {}".format(m))
