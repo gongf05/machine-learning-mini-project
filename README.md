@@ -23,3 +23,11 @@ There are two solutions:
 
 * multiple layer model: there is one hidden layer and one output layer.
 	- see "student_admission_multiple_layer_model.ipynb"
+
+
+### * MiniFlow 11/20/2017
+This project implements a prototype of tensorflow with basic operations including forward propagation and backward propagation. It use sigmoid function to facilitate the calculation of derivative of activation function. Also, it use basic stochastic gradient descent to minimize the loss function and tune the weights in the network. Please see "MiniFlow/miniFlow.py"
+
+The other file "MiniFlow/main.py" is a driver function to predict the housing price using the miniFlow prototype. 
+
+This project tries to implement mini-tensorflow from the scratch to understand the mechanism under the hood in depth. "
