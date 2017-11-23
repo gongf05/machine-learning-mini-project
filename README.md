@@ -26,3 +26,9 @@ This project implements a prototype of tensorflow with basic operations includin
 The other file "MiniFlow/main.py" is a driver function to predict the housing price using the miniFlow prototype. 
 
 This project tries to implement mini-tensorflow from the scratch to understand the mechanism under the hood in depth. "
+
+### * Basic Image Classification using Tensorflow 11/23/2017
+
+"tf_mnist_classificatio"
+
+This project makes use of basic tensorflow techniques to classify the images in MNIST dataset. This tiny project has most elements of a typical machine learning flow, which is good study case for beginner.  
