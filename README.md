@@ -32,3 +32,9 @@ This project tries to implement mini-tensorflow from the scratch to understand t
 "tf_mnist_classificatio"
 
 This project makes use of basic tensorflow techniques to classify the images in MNIST dataset. This tiny project has most elements of a typical machine learning flow, which is good study case for beginner.  
+
+### * Basic Practice Project using Keras
+
+"Keras first cnn"
+
+This project build a baby CNN using Keras framework. It is much concise and efficient to build CNN from scratch.
