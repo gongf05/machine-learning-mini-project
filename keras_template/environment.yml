@@ -1,0 +1,11 @@
+name: keras_tf
+dependencies:
+- python=2
+- path.py
+- tqdm
+- numpy
+- pandas
+- pillow
+- h5py
+- scikit-learn
+- tensorflow
