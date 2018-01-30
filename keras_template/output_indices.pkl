@@ -1,0 +1,17 @@
+(dp0
+S'tulips'
+p1
+I4
+sS'roses'
+p2
+I2
+sS'dandelion'
+p3
+I1
+sS'sunflowers'
+p4
+I3
+sS'daisy'
+p5
+I0
+s.

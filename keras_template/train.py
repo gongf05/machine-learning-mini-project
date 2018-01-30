@@ -6,7 +6,7 @@ import pickle
 import logging
 import numpy as np
 from tensorflow.contrib.keras.python.keras.preprocessing import image
-from tensorflow.contrib.keras.python.keras.preprocessing import ImageDataGenerator
+from tensorflow.contrib.keras.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.contrib.keras.python.keras.models import Model
 from tensorflow.contrib.keras.python.keras.layers import Dense, Dropout, Activation, Flatten, Input
 from tensorflow.contrib.keras.python.keras.layers import Convolution2D, MaxPooling2D
@@ -19,8 +19,8 @@ MODEL_CKPT_FILE = 'ckpt.h5'
 
 CLASS_INDEX_FILE = 'output_indices.pkl'
 
-IMG_SRC_SIZE = (256, 256)
-IMG_TGT_SIZE = (64, 64)
+IMG_SRC_SIZE = (500, 500)
+IMG_TGT_SIZE = (32, 32)
 
 IMG_COLORMODE = 'rgb' # rgb, grayscale
 
@@ -31,7 +31,7 @@ BATCH_SIZE = {
 }
 
 EPOCHS = {
-    'train' : 24,
+    'train' : 50,
     'test'  : 1,
     'infer' : 1,
 }
@@ -58,8 +58,8 @@ def build_train_gen(train_data_dir):
             zoom_range = 0.0,
             width_shift_range = 0.1,
             height_shift_range = 0.1,
-            horizontal_flip = True,
-            vertical_flip = True)
+            horizontal_flip = False,
+            vertical_flip = False)
 
     traingen = train_datagen.flow_from_directory(
             train_data_dir,
@@ -67,12 +67,24 @@ def build_train_gen(train_data_dir):
             batch_size = BATCH_SIZE['train'],
             color_mode = IMG_COLORMODE,
             class_mode = "categorical")
+    # dump class index into serial file so that test can read it 
     pickle.dump(traingen.class_indices, open(CLASS_INDEX_FILE, 'wb'))
     return traingen
 
 def build_test_gen(test_data_dir):
     test_datagen = ImageDataGenerator(
-            rescale = 1./ 255)
+            featurewise_center = False,
+            samplewise_center = False,
+            featurewise_std_normalization = False,
+            samplewise_std_normalization = False,
+            zca_whitening = False,
+            rescale = 1./ 255,
+            shear_range = 0.0,
+            zoom_range = 0.0, 
+            width_shift_range = 0.1,
+            height_shift_range = 0.1,
+            horizontal_flip = False,
+            vertical_flip = False)
 
     testgen = test_datagen.flow_from_directory(
             test_data_dir,
@@ -101,7 +113,7 @@ def build_model(num_output_classes):
                         activation='relu',
                         name='conv1',
                         data_format='channels_last')(inputs)
-    pool1 = MaxPooling(pool_size=poolsize, name='pool1')(conv1)
+    pool1 = MaxPooling2D(pool_size=poolsize, name='pool1')(conv1)
     drop1 = Dropout(dropout)(pool1)
     conv2 = Convolution2D(conv2size, convfiltsize,
                         strides=(1,1),
@@ -109,10 +121,10 @@ def build_model(num_output_classes):
                         activation='relu',
                         name='conv2',
                         data_format='channels_last')(drop1)
-    pool2 = MaxPooling(pool_size=poolsize, name='pool2')(conv2)
+    pool2 = MaxPooling2D(pool_size=poolsize, name='pool2')(conv2)
     drop2 = Dropout(dropout)(pool2)
     flat2 = Flatten()(drop2)
-    dense = Dense(densesie, name='dense')(flat2)
+    dense = Dense(densesize, name='dense')(flat2)
     denseact = Activation('relu')(dense)
     output = Dense(num_output_classes, name='output')(denseact)
     outputact = Activation('softmax')(output)
@@ -124,7 +136,7 @@ def build_model(num_output_classes):
     return model
 
 
-def train_model(datadir):
+def train_mode(datadir):
     traindatadir = datadir + '/train/'
     traingen = build_train_gen(traindatadir)
     num_output_classes = len(traingen.class_indices)
@@ -133,7 +145,8 @@ def train_model(datadir):
 
     checkpointer = ModelCheckpoint(filepath=MODEL_CKPT_FILE, verbose=1, save_best_only=True)
     earlystop = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=1, mode='auto')
-    tfboard = TensorBoard(log_dir='./tfboard', histogram_freq=1, batch_size=BATCH_SIZE['train'], write_graph=True, write_images=True)
+    #tfboard = TensorBoard(log_dir='./tfboard', histogram_freq=1, 
+    #        write_graph=True, write_images=True)
     logging.info("starting fit_generator with num samples: %d, epochs: %d", numsamples, EPOCHS['train'])
     num_steps = numsamples / BATCH_SIZE['train']
     hist = model.fit_generator(
@@ -142,7 +155,8 @@ def train_model(datadir):
             EPOCHS['train'],
             validation_data = traingen,
             validation_steps = num_steps,
-            callbacks=[checkpointer, earlystop, tfboard])
+            #callbacks=[checkpointer, earlystop, tfboard])
+            callbacks=[checkpointer, earlystop])
     model.save(MODEL_SAVE_FILE)
     logging.info("Done training model, saved to file %s", MODEL_SAVE_FILE)
     logging.info("Training history: epoch, val_loss, val_accuracy")
@@ -200,13 +214,13 @@ def main():
     parser.add_argument("phase",
             help="Phase to perform: train, test, or infer")
     parser.add_argument("data",
-            help="The data to read."
+            help="The data to read.")
             
     args = parser.parse_args()
     funcs = {
-        'train' : train_model,
-        'test'  : test_model,
-        'infer' : infer_model,
+        'train' : train_mode,
+        'test'  : test_mode,
+        'infer' : infer_mode,
         }
     start_time = time.time()
     result = funcs[args.phase](args.data)
